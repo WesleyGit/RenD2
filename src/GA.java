@@ -14,7 +14,7 @@ import java.util.Scanner;
  */
 public class GA {
 
-    public static void main(String[] args)
+	public static void main(String[] args)
     {
         ArrayList<Sample> trainset = new ArrayList<Sample>();
         try
@@ -32,10 +32,32 @@ public class GA {
                 trainset.add(new Sample(att, Integer.getInteger(input[input.length])));
             }
             file.close();
+            GA ga = new GA(trainset, new RK_GA());
+            ga.findFittestClassifier();
         }
         catch ( IOException ioe )
         {
             System.out.println("Het bestand train.txt kon niet worden gelezen. Error: " + ioe.getMessage() );
         }
     }
+	
+	private ArrayList<Sample> trainset;
+	private ArrayList<Specimen> population;
+	private GeneticStrategy strategy;
+	private static final double THRESHOLD = 0.9;
+	private static final int POPSIZE = 100;
+	
+	public GA(ArrayList<Sample> trainset, GeneticStrategy strategy) {
+		this.trainset = trainset;
+		this.strategy = strategy;
+		population = new ArrayList<Specimen>();
+		for (int i = 0; i < POPSIZE; i++) {
+			population.add(new Specimen(trainset));
+		}
+	}
+	
+    private void findFittestClassifier() {
+		// TODO Auto-generated method stub	
+	}
+    
 }

@@ -51,6 +51,10 @@ public class Sample implements Comparable<Sample> {
     public void setTmpDistance(double d) {
     	tmpdistance = d;
     }
+    
+    public int getAttributeCount() {
+    	return attributes.size();
+    }
 
 	public int compareTo(Sample arg0) {
 		if (tmpdistance < arg0.getTmpDistance())

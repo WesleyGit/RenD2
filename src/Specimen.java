@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 /**
  *
@@ -14,11 +15,37 @@ public class Specimen {
     private final ArrayList<Sample> samples;
     private int correct;
 
+    /**
+     * Deze constructor moet een willekeurige lijst met attributes en examples genereren
+     * @param samples
+     */
+    public Specimen (ArrayList<Sample> samples) {
+    	this.examples = new ArrayList<Integer>();
+    	Random r = new Random();
+    	for (int i = 0; i < samples.size(); i++) {
+    		if (r.nextBoolean()) {
+    			examples.add(i);
+    		}
+    	}
+    	this.attributes = new ArrayList<Integer>();
+    	for (int i = 0; i < samples.get(0).getAttributeCount(); i++) {
+    		if (r.nextBoolean()) {
+    			attributes.add(i);
+    		}
+    	}
+        this.samples = samples;
+        this.correct = findCorrectCount();
+    }
+    
     public Specimen (ArrayList<Integer> attributes, ArrayList<Integer> examples, ArrayList<Sample> samples) {
         this.attributes = attributes;
         this.examples = examples;
         this.samples = samples;
-        correct = 0;
+        this.correct = findCorrectCount();
+    }
+    
+    private int findCorrectCount() {
+    	int correct = 0;
         try {
 	        for (Sample sample:this.samples) {
 	        	ArrayList<Sample> referenceSet = new ArrayList<Sample>();
@@ -56,6 +83,7 @@ public class Specimen {
         catch (Exception e1) {
 			e1.printStackTrace();
 		}
+        return correct;
     }
     
     public ArrayList<Integer> getExamples() {
