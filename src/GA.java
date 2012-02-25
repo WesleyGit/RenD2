@@ -44,7 +44,7 @@ public class GA {
 	private ArrayList<Sample> trainset;
 	private ArrayList<Specimen> population;
 	private GeneticStrategy strategy;
-	private static final double THRESHOLD = 0.9;
+	private static final int ITERATIONS = 50;
 	private static final int POPSIZE = 100;
 	
 	public GA(ArrayList<Sample> trainset, GeneticStrategy strategy) {
@@ -57,7 +57,11 @@ public class GA {
 	}
 	
     private void findFittestClassifier() {
-	
+    	for (int i = 0; i < ITERATIONS; i++) {
+    		strategy.iterate(population);
+    	}
+    	System.out.println("The fittest classifier is: "+strategy.getFittestSpecimen(population));
+    	System.out.println("With a fitness of: "+strategy.fitness(strategy.getFittestSpecimen(population)));
 	}
     
 }

@@ -124,4 +124,17 @@ public class Specimen {
     public int getIncorrectSamples() {
         return samples.size() - correct;
     }
+
+	public int getSampleAttributeCount() {
+		return samples.get(0).getAttributeCount();
+	}
+
+	public int getSampleCount() {
+		return samples.size();
+	}
+	
+	@Override
+	public String toString() {
+		return "Specimen details:\nAttributes used: "+attributes+"\nsamples used: "+samples+"\nCorrectly classified: "+correct;
+	}
 }

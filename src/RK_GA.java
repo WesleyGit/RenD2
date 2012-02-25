@@ -16,12 +16,14 @@ public class RK_GA implements GeneticStrategy {
 
 	private double c1, c2, c3;
 	private final int MATINGPAIRS;
+	private final double MUTATIONRATE;
 	
 	public RK_GA() {
 		c1 = 0.6;
 		c2 = 0.4;
 		c3 = 0.7;
 		MATINGPAIRS = 10;
+		MUTATIONRATE = 0.02;
 	}
 	
     public double fitness(Specimen s) {
@@ -50,15 +52,21 @@ public class RK_GA implements GeneticStrategy {
 	        ArrayList<Integer> A_exmp = twoPointCrossover(s1.getExamples(), s2.getExamples(), r1e1, r1e2, r2e1, r2e2);
 	        ArrayList<Integer> B_exmp = twoPointCrossover(s2.getExamples(), s1.getExamples(), r2e1, r2e2, r1e1, r1e2);
 	        
-	        population.add(new Specimen(A_att, A_exmp, s1.getSamples()));
-	        population.add(new Specimen(B_att, B_exmp, s1.getSamples()));
+	        population.add(mutate(new Specimen(A_att, A_exmp, s1.getSamples())));
+	        population.add(mutate(new Specimen(B_att, B_exmp, s1.getSamples())));
+	        
     	}
     	//sorteren en weggooien van de eerste MATINGPAIRS*2 elementen, met de laagste fitness
     	Collections.sort(population, new FitnessComparator());
     	population.subList(0, population.size()-MATINGPAIRS*2).clear();
     }
-    
-    private class FitnessComparator implements Comparator<Specimen> {
+
+    public Specimen getFittestSpecimen(ArrayList<Specimen> population) {
+    	Collections.sort(population, new FitnessComparator());
+    	return population.get(population.size()-1);
+    }
+
+	protected class FitnessComparator implements Comparator<Specimen> {
 
 		public int compare(Specimen o1, Specimen o2) {
 			if (fitness(o1) < fitness(o2))
@@ -67,8 +75,23 @@ public class RK_GA implements GeneticStrategy {
 		}
 		
     }
+	
+	protected Specimen mutate(Specimen s) {
+    	mutateChromosome(s.getAttributes(), s.getSampleAttributeCount());
+    	mutateChromosome(s.getExamples(), s.getSampleCount());
+		return s;
+	}
     
-    private ArrayList<Integer> twoPointCrossover(ArrayList<Integer> a, ArrayList<Integer> b, int a1, int a2, int b1, int b2) {
+	protected void mutateChromosome(ArrayList<Integer> c, int total) {
+    	Random r = new Random();
+		for (int i = 0; i < Math.ceil(c.size() * MUTATIONRATE); i++) {
+			int r2 = r.nextInt(c.size());
+			int n = r.nextInt(c.size());
+			c.set(r2, (c.get(r2) + n) % total);
+		}
+    }
+
+	protected ArrayList<Integer> twoPointCrossover(ArrayList<Integer> a, ArrayList<Integer> b, int a1, int a2, int b1, int b2) {
     	ArrayList<Integer> r = new ArrayList<Integer>();
         r.addAll(a.subList(0, a1));
         r.addAll(b.subList(b1, b2));
@@ -82,7 +105,7 @@ public class RK_GA implements GeneticStrategy {
      * @param population de populatie van specimen
      * @return een willekeurige specimen
      */
-    private Specimen selectRandomSpecimen(ArrayList<Specimen> population) {
+	protected Specimen selectRandomSpecimen(ArrayList<Specimen> population) {
     	double sumOfFitness = 0;
     	for (Specimen s : population) {
     		sumOfFitness += fitness(s);
@@ -96,6 +119,5 @@ public class RK_GA implements GeneticStrategy {
     		n += fitness(population.get(i)) / sumOfFitness;
     	} while (n < rd);
     	return population.get(i);
-    }
-    
+	}
 }

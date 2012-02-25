@@ -7,6 +7,6 @@
  *
  * @author Joost
  */
-public class RK_GA_CorrectMyWrongs extends ModifiedRK_GA {
+public class RK_GA_CorrectMyWrongs extends ModifiedRK_GA implements GeneticStrategy {
     
 }
