@@ -13,6 +13,6 @@ import java.util.ArrayList;
 public interface GeneticStrategy {
     
     public double fitness(Specimen s);
-    public ArrayList<Specimen> iterate(ArrayList<Specimen> population);
+    public void iterate(ArrayList<Specimen> population);
     
 }

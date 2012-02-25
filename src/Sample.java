@@ -44,22 +44,18 @@ public class Sample implements Comparable<Sample> {
     	return classification;
     }
     
-    public double getTmpDistance() {
-    	return tmpdistance;
+    public int getAttributeCount() {
+    	return attributes.size();
     }
     
     public void setTmpDistance(double d) {
     	tmpdistance = d;
     }
-    
-    public int getAttributeCount() {
-    	return attributes.size();
-    }
 
 	public int compareTo(Sample arg0) {
-		if (tmpdistance < arg0.getTmpDistance())
+		if (tmpdistance < arg0.tmpdistance)
 			return -1;
-		return (tmpdistance == arg0.getTmpDistance() ? 0 : -1);
+		return (tmpdistance == arg0.tmpdistance ? 0 : -1);
 	}
     
 }

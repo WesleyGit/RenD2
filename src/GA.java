@@ -57,7 +57,7 @@ public class GA {
 	}
 	
     private void findFittestClassifier() {
-		// TODO Auto-generated method stub	
+	
 	}
     
 }

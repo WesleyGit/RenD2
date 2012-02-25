@@ -6,7 +6,7 @@ import java.util.Random;
  *
  * @author Joost
  */
-public class Specimen {
+public class Specimen implements Comparable<Specimen> {
     
 	public static final int K = 3;
 	
@@ -14,6 +14,7 @@ public class Specimen {
     private final ArrayList<Integer> examples;
     private final ArrayList<Sample> samples;
     private int correct;
+    private double tmpfitness = 0;
 
     /**
      * Deze constructor moet een willekeurige lijst met attributes en examples genereren
@@ -94,8 +95,12 @@ public class Specimen {
         return attributes;
     }
     
-    public int getSampleCount() {
-    	return samples.size();
+    public ArrayList<Sample> getSamples() {
+        return samples;
+    }
+    
+    public int getExamplesCount() {
+    	return examples.size();
     }
     
     public int getAttributeCount() {
@@ -106,5 +111,17 @@ public class Specimen {
         return correct;
     }
     
+    public int getIncorrectSamples() {
+        return samples.size() - correct;
+    }
 
+    public void setTmpFitness(double d) {
+    	tmpfitness = d;
+    }
+    
+	public int compareTo(Specimen arg0) {
+		if (tmpfitness < arg0.tmpfitness)
+			return -1;
+		return (tmpfitness == arg0.tmpfitness ? 0 : -1);
+	}
 }
