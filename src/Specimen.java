@@ -1,12 +1,13 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 /**
  *
  * @author Joost
  */
-public class Specimen implements Comparable<Specimen> {
+public class Specimen {
     
 	public static final int K = 3;
 	
@@ -14,7 +15,6 @@ public class Specimen implements Comparable<Specimen> {
     private final ArrayList<Integer> examples;
     private final ArrayList<Sample> samples;
     private int correct;
-    private double tmpfitness = 0;
 
     /**
      * Deze constructor moet een willekeurige lijst met attributes en examples genereren
@@ -47,44 +47,54 @@ public class Specimen implements Comparable<Specimen> {
     
     private int findCorrectCount() {
     	int correct = 0;
-        try {
-	        for (Sample sample:this.samples) {
-	        	ArrayList<Sample> referenceSet = new ArrayList<Sample>();
-	        	/* TODO dit moet efficienter kunnen, want examples en samples zijn allebei gesorteerd,
-	        	dus dat algoritme van bij Complexiteit met O(k * n) ipv O(n^2) werkt hier.
-	        	Maar nu even geen zin in.*/
-	        	for (Integer example:examples) {
-	        		Sample t = samples.get(example);
-	        		t.setTmpDistance(sample.distance(t));
-	        		referenceSet.add(t);
-	        	}
-	        	//worden dus gesorteerd op distance, want Sample implementeert het Comparable-interface.
-	        	Collections.sort(referenceSet);
-	        	//alleen de eerste K elementen overhouden (door sublist te maken en die te clearen)
-	        	referenceSet.subList(K, referenceSet.size()).clear();
-	        	int maxfreq = 0;
-	        	int maxclass = -1;
-	        	//om alle classes af te lopen
-	        	for (Sample s:referenceSet) {
-	        		int freq = 0;
-	        		for (Sample s2:referenceSet) {
-	        			if (s.getClassification() == s2.getClassification()) {
-	        				freq++;
-	        			}
-	        		}
-	        		if (freq > maxfreq) {
-	        			maxclass = s.getClassification();
-	        		}
-	        	}
-	            if (sample.getClassification() == maxclass) {
-	                correct++;
-	            }
-	        }
-	    }
-        catch (Exception e1) {
-			e1.printStackTrace();
-		}
+        for (Sample sample:this.samples) {
+        	ArrayList<Sample> referenceSet = new ArrayList<Sample>();
+        	/* TODO dit moet efficienter kunnen, want examples en samples zijn allebei gesorteerd,
+        	dus dat algoritme van bij Complexiteit met O(k * n) ipv O(n^2) werkt hier.
+        	Maar nu even geen zin in.*/
+        	for (Integer example:examples) {
+        		Sample t = samples.get(example);
+        		referenceSet.add(t);
+        	}
+        	//we gebruiken de hieronder gedefineerde DistanceComparator om te sorteren op afstand tot sample
+        	Collections.sort(referenceSet, new DistanceComparator(sample));
+        	//alleen de eerste K elementen overhouden (door sublist te maken en die te clearen)
+        	referenceSet.subList(K, referenceSet.size()).clear();
+        	int maxfreq = 0;
+        	int maxclass = -1;
+        	//om alle classes af te lopen
+        	for (Sample s:referenceSet) {
+        		int freq = 0;
+        		for (Sample s2:referenceSet) {
+        			if (s.getClassification() == s2.getClassification()) {
+        				freq++;
+        			}
+        		}
+        		if (freq > maxfreq) {
+        			maxclass = s.getClassification();
+        		}
+        	}
+            if (sample.getClassification() == maxclass) {
+                correct++;
+            }
+        }
         return correct;
+    }
+    
+    private class DistanceComparator implements Comparator<Sample> {
+
+    	private Sample origin;
+    	
+    	public DistanceComparator(Sample origin) {
+    		this.origin = origin;
+    	}
+    	
+		public int compare(Sample o1, Sample o2) {
+			if (origin.distance(o1) < origin.distance(o2))
+				return -1;
+			return (origin.distance(o1) == origin.distance(o2) ? 0 : -1);
+		}
+		
     }
     
     public ArrayList<Integer> getExamples() {
@@ -114,14 +124,4 @@ public class Specimen implements Comparable<Specimen> {
     public int getIncorrectSamples() {
         return samples.size() - correct;
     }
-
-    public void setTmpFitness(double d) {
-    	tmpfitness = d;
-    }
-    
-	public int compareTo(Specimen arg0) {
-		if (tmpfitness < arg0.tmpfitness)
-			return -1;
-		return (tmpfitness == arg0.tmpfitness ? 0 : -1);
-	}
 }

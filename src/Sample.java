@@ -10,11 +10,10 @@ import java.util.Iterator;
  *
  * @author Joost
  */
-public class Sample implements Comparable<Sample> {
+public class Sample {
     
 	private ArrayList<Double> attributes;
 	private int classification;
-	private double tmpdistance = 0;
 	
     public Sample(ArrayList<Double> attributes, int classification) {
         this.attributes = attributes;
@@ -27,9 +26,10 @@ public class Sample implements Comparable<Sample> {
      * @return de distance als double
      * @throws Exception wordt gegooid als de lijsten geen overeenkomstige lengte hebben
      */
-    public double distance(Sample s) throws Exception {
+    public double distance(Sample s) {
     	if (s.attributes.size() != attributes.size()) {
-    		throw new Exception("Attribute counts do not match");
+    		System.out.println("Attribute counts do not match");
+    		return Double.MAX_VALUE;
     	}
     	double dist = 0;
     	Iterator<Double> it1 = s.attributes.iterator();
@@ -47,15 +47,4 @@ public class Sample implements Comparable<Sample> {
     public int getAttributeCount() {
     	return attributes.size();
     }
-    
-    public void setTmpDistance(double d) {
-    	tmpdistance = d;
-    }
-
-	public int compareTo(Sample arg0) {
-		if (tmpdistance < arg0.tmpdistance)
-			return -1;
-		return (tmpdistance == arg0.tmpdistance ? 0 : -1);
-	}
-    
 }

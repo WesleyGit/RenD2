@@ -5,6 +5,7 @@
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 /**
@@ -52,13 +53,19 @@ public class RK_GA implements GeneticStrategy {
 	        population.add(new Specimen(A_att, A_exmp, s1.getSamples()));
 	        population.add(new Specimen(B_att, B_exmp, s1.getSamples()));
     	}
-    	for (Specimen s : population) {
-    		s.setTmpFitness(fitness(s));
-    	}
-    	//Voor sorteren wordt de fitness gebruikt (dat kan, want Specimen implementeert Comparable)
-    	Collections.sort(population);
-    	//weggooien van de eerste MATINGPAIRS*2 elementen, met de laagste fitness
+    	//sorteren en weggooien van de eerste MATINGPAIRS*2 elementen, met de laagste fitness
+    	Collections.sort(population, new FitnessComparator());
     	population.subList(0, population.size()-MATINGPAIRS*2).clear();
+    }
+    
+    private class FitnessComparator implements Comparator<Specimen> {
+
+		public int compare(Specimen o1, Specimen o2) {
+			if (fitness(o1) < fitness(o2))
+				return -1;
+			return (fitness(o1) == fitness(o2) ? 0 : -1);
+		}
+		
     }
     
     private ArrayList<Integer> twoPointCrossover(ArrayList<Integer> a, ArrayList<Integer> b, int a1, int a2, int b1, int b2) {
