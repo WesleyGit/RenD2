@@ -9,7 +9,7 @@ import java.util.Random;
  */
 public class Specimen {
     
-	public static final int K = 3;
+	public static final int K = 1;
 	
     private final ArrayList<Integer> attributes;
     private final ArrayList<Integer> examples;
@@ -56,7 +56,6 @@ public class Specimen {
         		Sample t = samples.get(example);
         		referenceSet.add(t);
         	}
-        	DistanceComparator d = new DistanceComparator(sample);
         	//we gebruiken de hieronder gedefineerde DistanceComparator om te sorteren op afstand tot sample
         	Collections.sort(referenceSet, new DistanceComparator(sample));
         	//alleen de eerste K elementen overhouden (door sublist te maken en die te clearen)

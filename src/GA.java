@@ -6,8 +6,6 @@
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Scanner;
 
 /**
@@ -19,6 +17,7 @@ public class GA {
 	public static void main(String[] args)
     {
         ArrayList<Sample> trainset = new ArrayList<Sample>();
+		//Proberen het bestand in te lezen..
         try
         {
             FileReader file = new FileReader("train.txt");
@@ -35,7 +34,7 @@ public class GA {
                 trainset.add(new Sample(att, Integer.valueOf(input[input.length-1]), no++));
             }
             file.close();
-            GA ga = new GA(trainset, new RK_GA());
+            GA ga = new GA(trainset, new ModifiedRK_GA());
             ga.findFittestClassifier();
         }
         catch ( IOException ioe )
@@ -44,14 +43,12 @@ public class GA {
         }
     }
 	
-	private ArrayList<Sample> trainset;
 	private ArrayList<Specimen> population;
 	private GeneticStrategy strategy;
 	private static final int ITERATIONS = 200;
 	private static final int POPSIZE = 200;
 	
 	public GA(ArrayList<Sample> trainset, GeneticStrategy strategy) {
-		this.trainset = trainset;
 		this.strategy = strategy;
 		population = new ArrayList<Specimen>();
 		for (int i = 0; i < POPSIZE; i++) {
@@ -63,11 +60,12 @@ public class GA {
     	
     	for (int i = 0; i < ITERATIONS; i++) {
     		strategy.iterate(population);
+    		/* test om te kijken of er wel elementen met 2 attributes in de pop zitten
     		int n = 0;
     		for (int j = 0; j < population.size(); j++)
     			if (population.get(j).getAttributes().size() == 2)
     				n++;
-    		//System.out.println(n);
+    		System.out.println(n);*/
     	}
     	System.out.println("The fittest classifier is:\n"+strategy.getFittestSpecimen(population));
     	System.out.println("With a fitness of: "+strategy.fitness(strategy.getFittestSpecimen(population)));

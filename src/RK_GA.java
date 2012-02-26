@@ -28,7 +28,10 @@ public class RK_GA implements GeneticStrategy {
 	}
 	
     public double fitness(Specimen s) {
-    	return 1 / (c1 * s.getIncorrectSamples() + c2 * s.getExamplesCount() + c3 * s.getAttributeCount());
+		int Er = s.getIncorrectSamples();
+		int Ne = s.getExamplesCount();
+		int Na = s.getAttributeCount();
+    	return 1 / (c1 * Er + c2 * Ne + c3 * Na);
     }
 
     public void iterate(ArrayList<Specimen> population) {
