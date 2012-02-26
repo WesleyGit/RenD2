@@ -14,10 +14,12 @@ public class Sample {
     
 	private ArrayList<Double> attributes;
 	private int classification;
+	private final int no;
 	
-    public Sample(ArrayList<Double> attributes, int classification) {
+    public Sample(ArrayList<Double> attributes, int classification, int no) {
         this.attributes = attributes;
         this.classification = classification;
+        this.no = no;
     }
     
     /**
@@ -46,5 +48,9 @@ public class Sample {
     
     public int getAttributeCount() {
     	return attributes.size();
+    }
+    
+    public String toString() {
+    	return "Sample " + no;
     }
 }

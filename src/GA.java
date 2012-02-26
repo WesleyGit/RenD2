@@ -22,6 +22,7 @@ public class GA {
             FileReader file = new FileReader("train.txt");
             Scanner scan = new Scanner( file );
             String line;
+            int no = 0;
             while (scan.hasNextLine()) {
             	line = scan.nextLine();
             	String[] input = line.split(" ");
@@ -29,7 +30,7 @@ public class GA {
             	for (int i = 0; i < input.length - 1; i++) {
             		att.add(Double.valueOf(input[i]));
             	}
-                trainset.add(new Sample(att, Integer.getInteger(input[input.length])));
+                trainset.add(new Sample(att, Integer.valueOf(input[input.length-1]), no++));
             }
             file.close();
             GA ga = new GA(trainset, new RK_GA());
@@ -60,7 +61,7 @@ public class GA {
     	for (int i = 0; i < ITERATIONS; i++) {
     		strategy.iterate(population);
     	}
-    	System.out.println("The fittest classifier is: "+strategy.getFittestSpecimen(population));
+    	System.out.println("The fittest classifier is:\n"+strategy.getFittestSpecimen(population));
     	System.out.println("With a fitness of: "+strategy.fitness(strategy.getFittestSpecimen(population)));
 	}
     
