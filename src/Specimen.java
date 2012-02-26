@@ -56,6 +56,7 @@ public class Specimen {
         		Sample t = samples.get(example);
         		referenceSet.add(t);
         	}
+        	DistanceComparator d = new DistanceComparator(sample);
         	//we gebruiken de hieronder gedefineerde DistanceComparator om te sorteren op afstand tot sample
         	Collections.sort(referenceSet, new DistanceComparator(sample));
         	//alleen de eerste K elementen overhouden (door sublist te maken en die te clearen)
@@ -71,6 +72,7 @@ public class Specimen {
         			}
         		}
         		if (freq > maxfreq) {
+        			maxfreq = freq;
         			maxclass = s.getClassification();
         		}
         	}
@@ -81,7 +83,7 @@ public class Specimen {
         return correct;
     }
     
-    private class DistanceComparator implements Comparator<Sample> {
+    public class DistanceComparator implements Comparator<Sample> {
 
     	private Sample origin;
     	
@@ -90,9 +92,9 @@ public class Specimen {
     	}
     	
 		public int compare(Sample o1, Sample o2) {
-			if (origin.distance(o1) < origin.distance(o2))
+			if (origin.distance(o1, attributes) < origin.distance(o2, attributes))
 				return -1;
-			return (origin.distance(o1) == origin.distance(o2) ? 0 : -1);
+			return (origin.distance(o1, attributes) == origin.distance(o2, attributes) ? 0 : 1);
 		}
 		
     }
@@ -135,6 +137,6 @@ public class Specimen {
 	
 	@Override
 	public String toString() {
-		return "Specimen details:\nAttributes used: "+attributes+"\nsamples used: "+samples+"\nCorrectly classified: "+correct;
+		return "Specimen details:\nAttributes used ["+attributes.size()+"]: "+attributes+"\nexamples used ["+examples.size()+"]: "+examples+"\nCorrectly classified: "+correct;
 	}
 }

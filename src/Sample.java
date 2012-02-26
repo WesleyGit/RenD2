@@ -24,20 +24,20 @@ public class Sample {
     
     /**
      * Berekent simpelweg de Eucledian distance tussen twee lijsten met attributes
-     * @param secondatts Een lijst met attributes evenlang als die van Sample
-     * @return de distance als double
-     * @throws Exception wordt gegooid als de lijsten geen overeenkomstige lengte hebben
+     * @param s het andere punt waartot de afstand moet worden berekend 
+     * @param att de attributen die gebruikt mogen worden
+     * @return de afstand tussen de twee samples
      */
-    public double distance(Sample s) {
+    public double distance(Sample s, ArrayList<Integer> att) {
     	if (s.attributes.size() != attributes.size()) {
     		System.out.println("Attribute counts do not match");
     		return Double.MAX_VALUE;
     	}
     	double dist = 0;
-    	Iterator<Double> it1 = s.attributes.iterator();
-    	Iterator<Double> it2 = attributes.iterator();
-    	while (it1.hasNext()) {
-    		dist += Math.pow(Math.abs(it1.next() - it2.next()),2);
+    	Iterator<Integer> it = att.iterator();
+    	while (it.hasNext()) {
+    		int a = it.next();
+    		dist += Math.pow(Math.abs(attributes.get(a) - s.attributes.get(a)),2); 
     	}
     	return Math.sqrt(dist);
     }

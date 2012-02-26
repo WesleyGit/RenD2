@@ -6,6 +6,8 @@
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Scanner;
 
 /**
@@ -45,8 +47,8 @@ public class GA {
 	private ArrayList<Sample> trainset;
 	private ArrayList<Specimen> population;
 	private GeneticStrategy strategy;
-	private static final int ITERATIONS = 50;
-	private static final int POPSIZE = 100;
+	private static final int ITERATIONS = 200;
+	private static final int POPSIZE = 200;
 	
 	public GA(ArrayList<Sample> trainset, GeneticStrategy strategy) {
 		this.trainset = trainset;
@@ -58,8 +60,14 @@ public class GA {
 	}
 	
     private void findFittestClassifier() {
+    	
     	for (int i = 0; i < ITERATIONS; i++) {
     		strategy.iterate(population);
+    		int n = 0;
+    		for (int j = 0; j < population.size(); j++)
+    			if (population.get(j).getAttributes().size() == 2)
+    				n++;
+    		//System.out.println(n);
     	}
     	System.out.println("The fittest classifier is:\n"+strategy.getFittestSpecimen(population));
     	System.out.println("With a fitness of: "+strategy.fitness(strategy.getFittestSpecimen(population)));

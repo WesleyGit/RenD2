@@ -17,5 +17,4 @@ public interface GeneticStrategy {
     public void iterate(ArrayList<Specimen> population);
     
     public Specimen getFittestSpecimen(ArrayList<Specimen> population);
-    
 }

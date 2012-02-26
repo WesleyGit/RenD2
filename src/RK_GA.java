@@ -6,6 +6,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -19,10 +20,10 @@ public class RK_GA implements GeneticStrategy {
 	private final double MUTATIONRATE;
 	
 	public RK_GA() {
-		c1 = 0.6;
-		c2 = 0.4;
-		c3 = 0.7;
-		MATINGPAIRS = 10;
+		c1 = 1; //correctness
+		c2 = 1; //examplecount
+		c3 = 1; //attributecount
+		MATINGPAIRS = 20;
 		MUTATIONRATE = 0.02;
 	}
 	
@@ -51,20 +52,17 @@ public class RK_GA implements GeneticStrategy {
 				r2e1 = r.nextInt(s2.getAttributeCount());
 				r2e2 = r.nextInt(s2.getAttributeCount());
 	        }
-	        //Misschien moeten we na crossover nog hersorteren en checken op duplicates..
 	        ArrayList<Integer> A_att = twoPointCrossover(s1.getAttributes(), s2.getAttributes(), Math.min(r1a1, r1a2), Math.max(r1a1, r1a2), Math.min(r2a1, r2a2), Math.max(r2a1, r2a2));
 	        ArrayList<Integer> B_att = twoPointCrossover(s2.getAttributes(), s1.getAttributes(), Math.min(r2a1, r2a2), Math.max(r2a1, r2a2), Math.min(r1a1, r1a2), Math.max(r1a1, r1a2));
 	        ArrayList<Integer> A_exmp = twoPointCrossover(s1.getExamples(), s2.getExamples(), Math.min(r1e1, r1e2), Math.max(r1e1, r1e2), Math.min(r2e1, r2e2), Math.max(r2e1, r2e2));
 	        ArrayList<Integer> B_exmp = twoPointCrossover(s2.getExamples(), s1.getExamples(), Math.min(r2e1, r2e2), Math.max(r2e1, r2e2), Math.min(r1e1, r1e2), Math.max(r1e1, r1e2));
 	        
-	        //en dat geldt dan ook voor mutatie
 	        population.add(mutate(new Specimen(A_att, A_exmp, s1.getSamples())));
 	        population.add(mutate(new Specimen(B_att, B_exmp, s1.getSamples())));
-	        
     	}
     	//sorteren en weggooien van de eerste MATINGPAIRS*2 elementen, met de laagste fitness
     	Collections.sort(population, new FitnessComparator());
-    	population.subList(0, population.size()-MATINGPAIRS*2).clear();
+    	population.subList(0, MATINGPAIRS*2).clear();
     }
 
     public Specimen getFittestSpecimen(ArrayList<Specimen> population) {
@@ -95,13 +93,28 @@ public class RK_GA implements GeneticStrategy {
 			int n = r.nextInt(c.size());
 			c.set(r2, (c.get(r2) + n) % total);
 		}
+		sortAndUnique(c);
     }
-
+	
+	protected void sortAndUnique(ArrayList<Integer> c) {
+		Collections.sort(c);
+		Iterator<Integer> it = c.iterator();
+		int prev = -1, curr = -1;
+		for (int i = 1; it.hasNext(); i++) {
+			curr = it.next();
+			if (curr == prev) {
+				it.remove();
+			}
+			prev = curr;
+		}
+	}
+	
 	protected ArrayList<Integer> twoPointCrossover(ArrayList<Integer> a, ArrayList<Integer> b, int a1, int a2, int b1, int b2) {
     	ArrayList<Integer> r = new ArrayList<Integer>();
         r.addAll(a.subList(0, a1));
         r.addAll(b.subList(b1, b2));
         r.addAll(a.subList(a2, a.size()));
+        sortAndUnique(r);
         return r;
     }
     
