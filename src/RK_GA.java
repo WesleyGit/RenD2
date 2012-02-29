@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -67,7 +62,7 @@ public class RK_GA implements GeneticStrategy {
     	Collections.sort(population, new FitnessComparator());
     	population.subList(0, MATINGPAIRS*2).clear();
     }
-
+    
     public Specimen getFittestSpecimen(ArrayList<Specimen> population) {
     	Collections.sort(population, new FitnessComparator());
     	return population.get(population.size()-1);
@@ -103,7 +98,7 @@ public class RK_GA implements GeneticStrategy {
 		Collections.sort(c);
 		Iterator<Integer> it = c.iterator();
 		int prev = -1, curr = -1;
-		for (int i = 1; it.hasNext(); i++) {
+		while (it.hasNext()) {
 			curr = it.next();
 			if (curr == prev) {
 				it.remove();
