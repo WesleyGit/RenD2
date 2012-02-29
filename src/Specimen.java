@@ -52,35 +52,8 @@ public class Specimen {
     private int findCorrectCount() {
     	int correct = 0;
         for (Sample sample:this.samples) {
-        	ArrayList<Sample> referenceSet = new ArrayList<Sample>();
-        	/* TODO dit moet efficienter kunnen, want examples en samples zijn allebei gesorteerd,
-        	dus dat algoritme van bij Complexiteit met O(k * n) ipv O(n^2) werkt hier.
-        	Maar nu even geen zin in.
-        	EDIT 29/2: Wes claimt dat dit niet efficienter kan, en ik zie 't eerlijk gezegd ook niet meer..*/
-        	for (Integer example:examples) {
-        		Sample t = samples.get(example);
-        		referenceSet.add(t);
-        	}
-        	//we gebruiken de hieronder gedefineerde DistanceComparator om te sorteren op afstand tot sample
-        	Collections.sort(referenceSet, new DistanceComparator(sample));
-        	//alleen de eerste K elementen overhouden (door sublist te maken en die te clearen)
-        	referenceSet.subList(K, referenceSet.size()).clear();
-        	int maxfreq = 0;
-        	int maxclass = -1;
-        	//om alle classes af te lopen
-        	for (Sample s:referenceSet) {
-        		int freq = 0;
-        		for (Sample s2:referenceSet) {
-        			if (s.getClassification() == s2.getClassification()) {
-        				freq++;
-        			}
-        		}
-        		if (freq > maxfreq) {
-        			maxfreq = freq;
-        			maxclass = s.getClassification();
-        		}
-        	}
-            if (sample.getClassification() == maxclass) {
+        	int c = computeClassification(sample);
+            if (sample.getClassification() == c) {
                 correct++;
                 errorvector.add(true);
             }
@@ -89,6 +62,42 @@ public class Specimen {
             }
         }
         return correct;
+    }
+    
+    public int computeClassification(ArrayList<Double> att) {
+    	return computeClassification(new Sample(att, 0, 0));
+    }
+    
+    public int computeClassification(Sample sample) {
+    	ArrayList<Sample> referenceSet = new ArrayList<Sample>();
+    	/* TODO dit moet efficienter kunnen, want examples en samples zijn allebei gesorteerd,
+    	dus dat algoritme van bij Complexiteit met O(k * n) ipv O(n^2) werkt hier.
+    	Maar nu even geen zin in.
+    	EDIT 29/2: Wes claimt dat dit niet efficienter kan, en ik zie 't eerlijk gezegd ook niet meer..*/
+    	for (Integer example:examples) {
+    		Sample t = samples.get(example);
+    		referenceSet.add(t);
+    	}
+    	//we gebruiken de hieronder gedefineerde DistanceComparator om te sorteren op afstand tot sample
+    	Collections.sort(referenceSet, new DistanceComparator(sample));
+    	//alleen de eerste K elementen overhouden (door sublist te maken en die te clearen)
+    	referenceSet.subList(K, referenceSet.size()).clear();
+    	int maxfreq = 0;
+    	int maxclass = -1;
+    	//om alle classes af te lopen
+    	for (Sample s:referenceSet) {
+    		int freq = 0;
+    		for (Sample s2:referenceSet) {
+    			if (s.getClassification() == s2.getClassification()) {
+    				freq++;
+    			}
+    		}
+    		if (freq > maxfreq) {
+    			maxfreq = freq;
+    			maxclass = s.getClassification();
+    		}
+    	}
+    	return maxclass;
     }
     
     public class DistanceComparator implements Comparator<Sample> {

@@ -50,6 +50,10 @@ public class Sample {
     	return attributes.size();
     }
     
+    public double getAttributeValue(int n) {
+    	return attributes.get(n);
+    }
+    
     public String toString() {
     	return "Sample " + no;
     }
