@@ -48,8 +48,8 @@ public class GA {
 	
 	private ArrayList<Specimen> population;
 	private GeneticStrategy strategy;
-	private static final int ITERATIONS = 50;
-	private static final int POPSIZE = 100;
+	private static final int ITERATIONS = 100;
+	private static final int POPSIZE = 50;
 	
 	public GA(ArrayList<Sample> trainset, GeneticStrategy strategy) {
 		this.strategy = strategy;

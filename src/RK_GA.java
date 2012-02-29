@@ -11,8 +11,8 @@ import java.util.Random;
 public class RK_GA implements GeneticStrategy {
 
 	private double c1, c2, c3;
-	private final int MATINGPAIRS;
-	private final double MUTATIONRATE;
+	protected final int MATINGPAIRS;
+	protected final double MUTATIONRATE;
 	
 	public RK_GA() {
 		c1 = 1; //correctness
@@ -31,37 +31,55 @@ public class RK_GA implements GeneticStrategy {
 
     public void iterate(ArrayList<Specimen> population) {
     	for (int i = 0; i < MATINGPAIRS; i++) {
-    		Specimen[] specs = selectSpecimen(population);
+    		Specimen[] specs = selectSpecimen(population, population.size() - i*2);
 	        Specimen s1 = specs[0];
 	        Specimen s2 = specs[1];
 	        
-	        //Allereerst gaan we de afstammelingen A en B bepalen door two-point crossover
-	        Random r = new Random();
-	        //Deze willekeurige getallen geven de bounds van substrings aan binnen de chromosomen van s1 en s2
-	        int r1a1 = 0, r1a2 = 0, r2a1 = 0, r2a2 = 0, r1e1 = 0, r1e2 = 0, r2e1 = 0, r2e2 = 0;
-	        if (s1.getAttributeCount() > 0) {
-				r1a1 = r.nextInt(s1.getAttributeCount());
-				r1a2 = r.nextInt(s1.getAttributeCount());
-				r1e1 = r.nextInt(s1.getAttributeCount());
-				r1e2 = r.nextInt(s1.getAttributeCount());
-	        }
-	        if (s2.getAttributeCount() > 0) {
-				r2a1 = r.nextInt(s2.getAttributeCount());
-				r2a2 = r.nextInt(s2.getAttributeCount());
-				r2e1 = r.nextInt(s2.getAttributeCount());
-				r2e2 = r.nextInt(s2.getAttributeCount());
-	        }
-	        ArrayList<Integer> A_att = twoPointCrossover(s1.getAttributes(), s2.getAttributes(), Math.min(r1a1, r1a2), Math.max(r1a1, r1a2), Math.min(r2a1, r2a2), Math.max(r2a1, r2a2));
-	        ArrayList<Integer> B_att = twoPointCrossover(s2.getAttributes(), s1.getAttributes(), Math.min(r2a1, r2a2), Math.max(r2a1, r2a2), Math.min(r1a1, r1a2), Math.max(r1a1, r1a2));
-	        ArrayList<Integer> A_exmp = twoPointCrossover(s1.getExamples(), s2.getExamples(), Math.min(r1e1, r1e2), Math.max(r1e1, r1e2), Math.min(r2e1, r2e2), Math.max(r2e1, r2e2));
-	        ArrayList<Integer> B_exmp = twoPointCrossover(s2.getExamples(), s1.getExamples(), Math.min(r2e1, r2e2), Math.max(r2e1, r2e2), Math.min(r1e1, r1e2), Math.max(r1e1, r1e2));
+	        specs = twoPointCrossOver(s1, s2);
 	        
-	        population.add(mutate(new Specimen(A_att, A_exmp, s1.getSamples())));
-	        population.add(mutate(new Specimen(B_att, B_exmp, s1.getSamples())));
+	        population.add(mutate(specs[0]));
+	        population.add(mutate(specs[1]));
     	}
     	//sorteren en weggooien van de eerste MATINGPAIRS*2 elementen, met de laagste fitness
     	Collections.sort(population, new FitnessComparator());
     	population.subList(0, MATINGPAIRS*2).clear();
+    }
+    
+	protected Specimen[] twoPointCrossOver(Specimen s1, Specimen s2) {
+		Specimen[] specs = new Specimen[2];
+        Random r = new Random();
+        //Deze willekeurige getallen geven de bounds van substrings aan binnen de chromosomen van s1 en s2
+        int r1a1 = 0, r1a2 = 0, r2a1 = 0, r2a2 = 0, r1e1 = 0, r1e2 = 0, r2e1 = 0, r2e2 = 0;
+        if (s1.getAttributeCount() > 0) {
+			r1a1 = r.nextInt(s1.getAttributeCount());
+			r1a2 = r.nextInt(s1.getAttributeCount());
+			r1e1 = r.nextInt(s1.getAttributeCount());
+			r1e2 = r.nextInt(s1.getAttributeCount());
+        }
+        if (s2.getAttributeCount() > 0) {
+			r2a1 = r.nextInt(s2.getAttributeCount());
+			r2a2 = r.nextInt(s2.getAttributeCount());
+			r2e1 = r.nextInt(s2.getAttributeCount());
+			r2e2 = r.nextInt(s2.getAttributeCount());
+        }
+        ArrayList<Integer> A_att = twoPointCrossover(s1.getAttributes(), s2.getAttributes(), Math.min(r1a1, r1a2), Math.max(r1a1, r1a2), Math.min(r2a1, r2a2), Math.max(r2a1, r2a2));
+        ArrayList<Integer> B_att = twoPointCrossover(s2.getAttributes(), s1.getAttributes(), Math.min(r2a1, r2a2), Math.max(r2a1, r2a2), Math.min(r1a1, r1a2), Math.max(r1a1, r1a2));
+        ArrayList<Integer> A_exmp = twoPointCrossover(s1.getExamples(), s2.getExamples(), Math.min(r1e1, r1e2), Math.max(r1e1, r1e2), Math.min(r2e1, r2e2), Math.max(r2e1, r2e2));
+        ArrayList<Integer> B_exmp = twoPointCrossover(s2.getExamples(), s1.getExamples(), Math.min(r2e1, r2e2), Math.max(r2e1, r2e2), Math.min(r1e1, r1e2), Math.max(r1e1, r1e2));
+        
+        specs[0] = new Specimen(A_att, A_exmp, s1.getSamples());
+        specs[1] = new Specimen(B_att, B_exmp, s1.getSamples());
+        
+		return specs;
+	}
+
+	protected ArrayList<Integer> twoPointCrossover(ArrayList<Integer> a, ArrayList<Integer> b, int a1, int a2, int b1, int b2) {
+    	ArrayList<Integer> r = new ArrayList<Integer>();
+        r.addAll(a.subList(0, a1));
+        r.addAll(b.subList(b1, b2));
+        r.addAll(a.subList(a2, a.size()));
+        sortAndUnique(r);
+        return r;
     }
     
     public Specimen getFittestSpecimen(ArrayList<Specimen> population) {
@@ -74,7 +92,7 @@ public class RK_GA implements GeneticStrategy {
 		public int compare(Specimen o1, Specimen o2) {
 			if (fitness(o1) < fitness(o2))
 				return -1;
-			return (fitness(o1) == fitness(o2) ? 0 : -1);
+			return (fitness(o1) == fitness(o2) ? 0 : 1);
 		}
 		
     }
@@ -108,16 +126,7 @@ public class RK_GA implements GeneticStrategy {
 		}
 	}
 	
-	protected ArrayList<Integer> twoPointCrossover(ArrayList<Integer> a, ArrayList<Integer> b, int a1, int a2, int b1, int b2) {
-    	ArrayList<Integer> r = new ArrayList<Integer>();
-        r.addAll(a.subList(0, a1));
-        r.addAll(b.subList(b1, b2));
-        r.addAll(a.subList(a2, a.size()));
-        sortAndUnique(r);
-        return r;
-    }
-	
-	protected Specimen[] selectSpecimen(ArrayList<Specimen> population) {
+	protected Specimen[] selectSpecimen(ArrayList<Specimen> population, int poplength) {
 		Specimen[] specs = new Specimen[2];
 		specs[0] = selectRandomSpecimen(population);
 		specs[1] = selectRandomSpecimen(population);

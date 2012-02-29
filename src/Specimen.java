@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -117,10 +118,6 @@ public class Specimen {
     public ArrayList<Sample> getSamples() {
         return samples;
     }
-
-    public ArrayList<Boolean> getErrorVector() {
-        return errorvector;
-    }
     
     public int getExamplesCount() {
     	return examples.size();
@@ -149,5 +146,15 @@ public class Specimen {
 	@Override
 	public String toString() {
 		return "Specimen details:\nAttributes used ["+attributes.size()+"]: "+attributes+"\nexamples used ["+examples.size()+"]: "+examples+"\nCorrectly classified: "+correct;
+	}
+
+	public int errorDist(Specimen s) {
+		int d = 0;
+		for (int i = 0; i < errorvector.size(); i++) {
+			if (errorvector.get(i) == true && s.errorvector.get(i) == false) {
+				d++;
+			}
+		}
+		return d;
 	}
 }
