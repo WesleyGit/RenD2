@@ -31,8 +31,9 @@ public class RK_GA implements GeneticStrategy {
 
     public void iterate(ArrayList<Specimen> population) {
     	for (int i = 0; i < MATINGPAIRS; i++) {
-	        Specimen s1 = selectRandomSpecimen(population);
-	        Specimen s2 = selectRandomSpecimen(population);
+    		Specimen[] specs = selectSpecimen(population);
+	        Specimen s1 = specs[0];
+	        Specimen s2 = specs[1];
 	        
 	        //Allereerst gaan we de afstammelingen A en B bepalen door two-point crossover
 	        Random r = new Random();
@@ -115,6 +116,13 @@ public class RK_GA implements GeneticStrategy {
         sortAndUnique(r);
         return r;
     }
+	
+	protected Specimen[] selectSpecimen(ArrayList<Specimen> population) {
+		Specimen[] specs = new Specimen[2];
+		specs[0] = selectRandomSpecimen(population);
+		specs[1] = selectRandomSpecimen(population);
+		return specs;
+	}
     
     /**
      * Deze functie levert een willekeurige Specimen op uit de populatie,

@@ -14,6 +14,7 @@ public class Specimen {
     private final ArrayList<Integer> attributes;
     private final ArrayList<Integer> examples;
     private final ArrayList<Sample> samples;
+    private final ArrayList<Boolean> errorvector;
     private int correct;
 
     /**
@@ -35,6 +36,7 @@ public class Specimen {
     		}
     	}
         this.samples = samples;
+        this.errorvector = new ArrayList<Boolean>();
         this.correct = findCorrectCount();
     }
     
@@ -42,6 +44,7 @@ public class Specimen {
         this.attributes = attributes;
         this.examples = examples;
         this.samples = samples;
+        this.errorvector = new ArrayList<Boolean>();
         this.correct = findCorrectCount();
     }
     
@@ -51,7 +54,8 @@ public class Specimen {
         	ArrayList<Sample> referenceSet = new ArrayList<Sample>();
         	/* TODO dit moet efficienter kunnen, want examples en samples zijn allebei gesorteerd,
         	dus dat algoritme van bij Complexiteit met O(k * n) ipv O(n^2) werkt hier.
-        	Maar nu even geen zin in.*/
+        	Maar nu even geen zin in.
+        	EDIT 29/2: Wes claimt dat dit niet efficienter kan, en ik zie 't eerlijk gezegd ook niet meer..*/
         	for (Integer example:examples) {
         		Sample t = samples.get(example);
         		referenceSet.add(t);
@@ -77,6 +81,10 @@ public class Specimen {
         	}
             if (sample.getClassification() == maxclass) {
                 correct++;
+                errorvector.add(true);
+            }
+            else {
+            	errorvector.add(false);
             }
         }
         return correct;
@@ -108,6 +116,10 @@ public class Specimen {
     
     public ArrayList<Sample> getSamples() {
         return samples;
+    }
+
+    public ArrayList<Boolean> getErrorVector() {
+        return errorvector;
     }
     
     public int getExamplesCount() {
