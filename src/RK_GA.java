@@ -11,14 +11,14 @@ import java.util.Random;
 public class RK_GA implements GeneticStrategy {
 
 	private double c1, c2, c3;
-	protected final int MATINGPAIRS;
+	protected int MATINGPAIRS;
 	protected final double MUTATIONRATE;
 	
 	public RK_GA() {
 		c1 = 1; //correctness
 		c2 = 1; //examplecount
 		c3 = 1; //attributecount
-		MATINGPAIRS = 20;
+		MATINGPAIRS = 10;
 		MUTATIONRATE = 0.02;
 	}
 	
@@ -30,7 +30,10 @@ public class RK_GA implements GeneticStrategy {
     }
 
     public void iterate(ArrayList<Specimen> population) {
+    	if (MATINGPAIRS > population.size()/2)
+    		MATINGPAIRS = population.size()/2;
     	for (int i = 0; i < MATINGPAIRS; i++) {
+    		System.out.println("Mating "+i);
     		Specimen[] specs = selectSpecimen(population, population.size() - i*2);
 	        Specimen s1 = specs[0];
 	        Specimen s2 = specs[1];

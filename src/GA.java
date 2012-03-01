@@ -23,7 +23,8 @@ public class GA {
 		//Proberen het bestand in te lezen..
         try
         {
-            FileReader file = new FileReader("mnisttrain.txt");
+        	FileReader file = new FileReader("mnisttrain.txt");
+            //FileReader file = new FileReader("mnisttrain.txt");
         	//FileReader file = new FileReader("train_set_001_n100_err0.txt");
             Scanner scan = new Scanner( file );
             String line;
@@ -51,15 +52,15 @@ public class GA {
 
 	private ArrayList<Specimen> population;
 	private GeneticStrategy strategy;
-	private static final int ITERATIONS = 500;
-	private static final int POPSIZE = 50;
+	private static final int ITERATIONS = 40;
+	private static final int POPSIZE = 20;
 	
 	public GA(ArrayList<Sample> trainset, GeneticStrategy strategy) {
 		this.strategy = strategy;
 		population = new ArrayList<Specimen>();
 		System.out.println("Constructing");
 		for (int i = 0; i < POPSIZE; i++) {
-			//System.out.println(i);
+			System.out.println(i);
 			population.add(new Specimen(trainset));
 		}
 		System.out.println("Done constructing");
@@ -68,7 +69,7 @@ public class GA {
     private Specimen findFittestClassifier() {
     	System.out.println("Start iterating..");
     	for (int i = 0; i < ITERATIONS; i++) {
-    		//System.out.println(i);
+    		//System.out.println("Iteration "+i);
     		strategy.iterate(population);
     		// test om te kijken of er wel elementen met 2 attributes in de pop zitten
     		/*int n = 0;
@@ -86,7 +87,7 @@ public class GA {
 	private static void createResults(Specimen classifier, ArrayList<Sample> trainset) {
 		try {
 			// Maken van prototype-file
-			FileWriter ofstream = new FileWriter("prototypes.txt");
+			FileWriter ofstream = new FileWriter("mnistprototypes.txt");
 			BufferedWriter out = new BufferedWriter(ofstream);
 			for (int e : classifier.getExamples()) {
 				Sample s = trainset.get(e);
@@ -112,7 +113,7 @@ public class GA {
 		 
 		ArrayList<Sample> testset = new ArrayList<Sample>();
 		try {
-			FileReader ifstream = new FileReader("test_data_001_n100.txt");
+			FileReader ifstream = new FileReader("mnisttest.txt");
 			Scanner scan = new Scanner( ifstream );
 			String line;
 			int no = 0;
@@ -135,7 +136,7 @@ public class GA {
 		System.out.println("Start writing predictions");
 		try {
 			// Maken van prediction-file
-			FileWriter ofstream = new FileWriter("prediction.txt");
+			FileWriter ofstream = new FileWriter("mnistprediction.txt");
 			BufferedWriter out = new BufferedWriter(ofstream);
 			for (Sample s : testset) {
 				out.write(s.getClassification()+"\n");

@@ -23,7 +23,7 @@ public class ModifiedRK_GA extends RK_GA {
 		double c1 = (double)(Net + 1) / (2 * Net + Nat + 3);
 		double c2 = c1;
 		double c3 = (double)(Nat + 1) / (2 * Net + Nat + 3);
-		return (c1 * (Net - Er) / Net + c2 * (Net - Ne) / (Net - 1) + c3 * (Nat - Na) / (Nat - 1)) / (Na < 2 ? 3 : 1);
+		return (c1 * (Net - Er) / Net + c2 * (Net - Ne) / (Net - 1) + c3 * (Nat - Na) / (Nat - 1));
     }
 	
 }
