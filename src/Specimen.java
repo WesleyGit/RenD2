@@ -55,10 +55,10 @@ public class Specimen {
         	int c = computeClassification(sample);
             if (sample.getClassification() == c) {
                 correct++;
-                errorvector.add(true);
+                errorvector.add(false);
             }
             else {
-            	errorvector.add(false);
+            	errorvector.add(true);
             }
         }
         return correct;

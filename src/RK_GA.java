@@ -33,7 +33,7 @@ public class RK_GA implements GeneticStrategy {
     	if (MATINGPAIRS > population.size()/2)
     		MATINGPAIRS = population.size()/2;
     	for (int i = 0; i < MATINGPAIRS; i++) {
-    		System.out.println("Mating "+i);
+    		//System.out.println("Mating "+i);
     		Specimen[] specs = selectSpecimen(population, population.size() - i*2);
 	        Specimen s1 = specs[0];
 	        Specimen s2 = specs[1];
